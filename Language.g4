@@ -15,7 +15,8 @@ expression
  
 n_func : 'function' (ID | 'init' | 'print' | 'scan' | 'main') LRB ((ID | assign) (COM (ID | assign))*)? RRB instr* 'end';       
 n_clas : 'class' ID 'is' assign* n_func* 'end';                              
-N_STRING : APO .*? APO;                                                  
+N_STRING : APO .*? APO;
+
 n_array : LSB array_row (SEM array_row)? RSB;
 n_if : 'if' expression' then' instr* ('elif' expression 'then' instr*)* ('else' instr*)? 'end';
 n_for : 'for' ((INT COL INT) | INT | assign) 'go' instr* 'end';                                             
@@ -54,10 +55,11 @@ assign
 SCOPE : 'global' | 'local';
 TYP : 'bool' | 'int' | 'str' | 'array' | 'struct' | 'double';
 
+BOOL : 'true' | 'false';
 DECIMAL : INT? DOT INT; 
 INT : [0-9]+;
-ID : [a-zA-Z0-9_]+;
-BOOL : 'true' | 'false';
+
+
 
 PLS : '+';
 MNS : '-';
@@ -86,6 +88,8 @@ COM : ',';
 SEM : ';';
 
 APO : '\'';
+
+ID : [a-zA-Z0-9_]+;
 
 COMMENT
     :   '/*' .*? '*/' -> skip

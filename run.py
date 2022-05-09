@@ -1,4 +1,5 @@
 from LanguageListener import LanguageListener
+from NameSpace import NameSpace
 from generated.LanguageLexer import LanguageLexer
 from generated.LanguageParser import LanguageParser
 from IRModuleBuilder import IRModuleBuilder
@@ -22,6 +23,7 @@ def main(argv):
     # module1.func1()
     # module1.main()
     # module1.genLL()
+
 
 if __name__ == '__main__':
     main(sys.argv)
