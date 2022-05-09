@@ -1,1 +1,5 @@
 **/.DS_Store
+/[Jj]ava*/
+/SANDBOX/
+__pycache__/
+generated/__pycache__/

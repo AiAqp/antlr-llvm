@@ -1,26 +1,6 @@
-a000012 = -2.00001 
-global int zzz
-local bool joe = 2 != 2
-ee = 10 == 10 
-newarr = {f(10),true,ee; 'cegiel',5,f.a67}
-
-class bass is 
-    global bool BoOlLeR
-    local int a = 420
-    function init(input, input2=4.20)
-        e = (input*2) + 8 
-    end 
-end 
-
-for 1:4 go 
-    if 8 == d then
-        return return 
-    elif 2+2>4 then 
-        a = b
-    else 
-        for i = 1126 go print(ds[2]) end
-    end
-    c = 2-'2 2 aaafbsadiasy8d98'
-end 
-
-function printer(a,array b,c,d,e) end 
+global int i1 = 10
+double d1 = .01
+double d2 = 2.0
+bool b1 = True 
+str s1 = 'abc 123?'
+array a1 = [1,2,3]

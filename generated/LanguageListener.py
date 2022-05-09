@@ -26,21 +26,21 @@ class LanguageListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by LanguageParser#expressionValue.
+    def enterExpressionValue(self, ctx:LanguageParser.ExpressionValueContext):
+        pass
+
+    # Exit a parse tree produced by LanguageParser#expressionValue.
+    def exitExpressionValue(self, ctx:LanguageParser.ExpressionValueContext):
+        pass
+
+
     # Enter a parse tree produced by LanguageParser#expressionBool.
     def enterExpressionBool(self, ctx:LanguageParser.ExpressionBoolContext):
         pass
 
     # Exit a parse tree produced by LanguageParser#expressionBool.
     def exitExpressionBool(self, ctx:LanguageParser.ExpressionBoolContext):
-        pass
-
-
-    # Enter a parse tree produced by LanguageParser#expressionnumber.
-    def enterExpressionnumber(self, ctx:LanguageParser.ExpressionnumberContext):
-        pass
-
-    # Exit a parse tree produced by LanguageParser#expressionnumber.
-    def exitExpressionnumber(self, ctx:LanguageParser.ExpressionnumberContext):
         pass
 
 
@@ -161,39 +161,93 @@ class LanguageListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by LanguageParser#value.
-    def enterValue(self, ctx:LanguageParser.ValueContext):
+    # Enter a parse tree produced by LanguageParser#valueBool.
+    def enterValueBool(self, ctx:LanguageParser.ValueBoolContext):
         pass
 
-    # Exit a parse tree produced by LanguageParser#value.
-    def exitValue(self, ctx:LanguageParser.ValueContext):
-        pass
-
-
-    # Enter a parse tree produced by LanguageParser#assign.
-    def enterAssign(self, ctx:LanguageParser.AssignContext):
-        pass
-
-    # Exit a parse tree produced by LanguageParser#assign.
-    def exitAssign(self, ctx:LanguageParser.AssignContext):
+    # Exit a parse tree produced by LanguageParser#valueBool.
+    def exitValueBool(self, ctx:LanguageParser.ValueBoolContext):
         pass
 
 
-    # Enter a parse tree produced by LanguageParser#seqc.
-    def enterSeqc(self, ctx:LanguageParser.SeqcContext):
+    # Enter a parse tree produced by LanguageParser#valueID.
+    def enterValueID(self, ctx:LanguageParser.ValueIDContext):
         pass
 
-    # Exit a parse tree produced by LanguageParser#seqc.
-    def exitSeqc(self, ctx:LanguageParser.SeqcContext):
+    # Exit a parse tree produced by LanguageParser#valueID.
+    def exitValueID(self, ctx:LanguageParser.ValueIDContext):
         pass
 
 
-    # Enter a parse tree produced by LanguageParser#number.
-    def enterNumber(self, ctx:LanguageParser.NumberContext):
+    # Enter a parse tree produced by LanguageParser#valueDecimal.
+    def enterValueDecimal(self, ctx:LanguageParser.ValueDecimalContext):
         pass
 
-    # Exit a parse tree produced by LanguageParser#number.
-    def exitNumber(self, ctx:LanguageParser.NumberContext):
+    # Exit a parse tree produced by LanguageParser#valueDecimal.
+    def exitValueDecimal(self, ctx:LanguageParser.ValueDecimalContext):
+        pass
+
+
+    # Enter a parse tree produced by LanguageParser#valueInt.
+    def enterValueInt(self, ctx:LanguageParser.ValueIntContext):
+        pass
+
+    # Exit a parse tree produced by LanguageParser#valueInt.
+    def exitValueInt(self, ctx:LanguageParser.ValueIntContext):
+        pass
+
+
+    # Enter a parse tree produced by LanguageParser#valueString.
+    def enterValueString(self, ctx:LanguageParser.ValueStringContext):
+        pass
+
+    # Exit a parse tree produced by LanguageParser#valueString.
+    def exitValueString(self, ctx:LanguageParser.ValueStringContext):
+        pass
+
+
+    # Enter a parse tree produced by LanguageParser#valueArray.
+    def enterValueArray(self, ctx:LanguageParser.ValueArrayContext):
+        pass
+
+    # Exit a parse tree produced by LanguageParser#valueArray.
+    def exitValueArray(self, ctx:LanguageParser.ValueArrayContext):
+        pass
+
+
+    # Enter a parse tree produced by LanguageParser#valueCall.
+    def enterValueCall(self, ctx:LanguageParser.ValueCallContext):
+        pass
+
+    # Exit a parse tree produced by LanguageParser#valueCall.
+    def exitValueCall(self, ctx:LanguageParser.ValueCallContext):
+        pass
+
+
+    # Enter a parse tree produced by LanguageParser#assignEvaluate.
+    def enterAssignEvaluate(self, ctx:LanguageParser.AssignEvaluateContext):
+        pass
+
+    # Exit a parse tree produced by LanguageParser#assignEvaluate.
+    def exitAssignEvaluate(self, ctx:LanguageParser.AssignEvaluateContext):
+        pass
+
+
+    # Enter a parse tree produced by LanguageParser#assignID.
+    def enterAssignID(self, ctx:LanguageParser.AssignIDContext):
+        pass
+
+    # Exit a parse tree produced by LanguageParser#assignID.
+    def exitAssignID(self, ctx:LanguageParser.AssignIDContext):
+        pass
+
+
+    # Enter a parse tree produced by LanguageParser#assignUninit.
+    def enterAssignUninit(self, ctx:LanguageParser.AssignUninitContext):
+        pass
+
+    # Exit a parse tree produced by LanguageParser#assignUninit.
+    def exitAssignUninit(self, ctx:LanguageParser.AssignUninitContext):
         pass
 
 

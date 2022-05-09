@@ -1,28 +1,28 @@
 grammar Language;
 start : (n_func | n_clas | instr)+;
 
-instr: (RET? (assign | call | n_if | n_for))+;
+instr
+    : ('return'? (assign | call | n_if | n_for)
+    | 'return' expression)+
+    ;
 
 expression           
     :  expression ((PLS | MNS | MUL | DIV | EXP) expression)+                       #expressionArithm
     |  expression (EQ | NEQ | GT | GTE | LS | LSE | NOT | AND | OR) expression      #expressionBool
     |  LRB expression RRB                                                           #expressionNested                
-    |  value                                                                        #expressionnumber
+    |  value                                                                        #expressionValue
     ;   
  
-n_func : 'function' (ID | 'init' | 'print' | 'scan' | 'main') LRB (ID | assign) (COM (ID | assign))* RRB instr* 'end';       
+n_func : 'function' (ID | 'init' | 'print' | 'scan' | 'main') LRB ((ID | assign) (COM (ID | assign))*)? RRB instr* 'end';       
 n_clas : 'class' ID 'is' assign* n_func* 'end';                              
 N_STRING : APO .*? APO;                                                  
-n_array : LCB array_row (SEM array_row)* RCB;
-n_if : 'if' expression 'then' instr* ('elif' expression 'then' instr*)* ('else' instr*)? 'end';
-n_for : 'for' (INT_seqc | INT | assign) 'go' instr* 'end';                                             
+n_array : LSB array_row (SEM array_row)? RSB;
+n_if : 'if' expression' then' instr* ('elif' expression 'then' instr*)* ('else' instr*)? 'end';
+n_for : 'for' ((INT COL INT) | INT | assign) 'go' instr* 'end';                                             
 
-array_row 
-    : seqc
-    | value (COM value)*
-    ;
+array_row : value (COM value)*;
    
-call : (ID | 'print') (clas | func_clas | array);
+call : ID (clas | func_clas | array);
 
 clas : DOT (func_clas | ID);
 func_clas : LRB (value | assign (COM (value | assign))*)? RRB;
@@ -31,25 +31,30 @@ array : LSB array_range (SEM array_range)? RSB;
 array_range
     : INT (COM INT)*
     | COL
-    | INT_seqc
+    | INT COL INT
     ;
 
-value : (BOOL | ID | number | N_STRING | n_array | call);
 
-assign : EXPLCT? EXPLCT? (ID ASN (value | expression) | ID);
+value 
+    : BOOL          #valueBool
+    | ID            #valueID
+    | MNS? DECIMAL  #valueDecimal
+    | MNS? INT      #valueInt
+    | N_STRING      #valueString
+    | n_array       #valueArray
+    | call          #valueCall
+    ;
 
-EXPLCT : ('global' | 'local') | TYP;
+assign 
+    : SCOPE? TYP? ID ASN (value | expression) #assignEvaluate
+    | SCOPE? TYP? ID ASN ID #assignID
+    | SCOPE? TYP? ID #assignUninit
+    ;
 
-seqc : number COL number (COL number)?;
-
-INT_seqc : INT COL INT;
-
-TYP : 'bool' | 'int' | 'str' | 'array' | 'struct';
-
-number: MNS? (DECIMAL | INT);
+SCOPE : 'global' | 'local';
+TYP : 'bool' | 'int' | 'str' | 'array' | 'struct' | 'double';
 
 DECIMAL : INT? DOT INT; 
-
 INT : [0-9]+;
 ID : [a-zA-Z0-9_]+;
 BOOL : 'true' | 'false';
@@ -79,7 +84,7 @@ DOT : '.';
 COL : ':';
 COM : ',';
 SEM : ';';
-RET : 'return';
+
 APO : '\'';
 
 COMMENT
