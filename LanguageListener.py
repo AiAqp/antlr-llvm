@@ -1,23 +1,12 @@
-from NameSpace import NameSpace
-from ValueStack import ValueStack
+from Compiler import Compiler
 from generated.LanguageListener import LanguageListener
 from generated.LanguageLexer import LanguageLexer
 from generated.LanguageParser import LanguageParser
-from llvmlite import ir
-import sys 
 
 class LanguageListener(LanguageListener):
 
     def __init__(self):
-        self.stack = ValueStack()
-        self.main_space = NameSpace()
-
-        self.module = ir.Module(name=__file__)
-        # atomic types 
-        self.voidptr_ty = ir.IntType(8).as_pointer()
-        self.typ_void = ir.FunctionType(ir.VoidType(), [])
-        self.int64 = ir.IntType(64)
-        self.double = ir.DoubleType()
+        self.compiler = Compiler()
 
 # START
 
@@ -25,19 +14,16 @@ class LanguageListener(LanguageListener):
         pass
 
     def exitStart(self, ctx:LanguageParser.StartContext):
-        llvm_ir = str(self.module)
-
-        with open("%s.ll" % "main", "w") as o:
-            o.write(llvm_ir)
-
-        self.stack.status()
-        self.main_space.status()
+        self.compiler.status()
+        self.compiler.ir_to_ll()
 
 # ASSIGN
 
     def exitAssignEvaluate(self, ctx:LanguageParser.AssignEvaluateContext):
-        self.main_space.init_object(str(ctx.ID()),str(ctx.SCOPE()),str(ctx.TYP()),self.stack.pop())
-        pass
+        # str(ctx.ID()),str(ctx.SCOPE()),str(ctx.TYP())
+        id = str(ctx.ID())
+        var = self.compiler.new_variable(id)
+        self.compiler.init_variable(id, var)
 
     def exitAssignID(self, ctx:LanguageParser.AssignIDContext):
         pass
@@ -48,8 +34,7 @@ class LanguageListener(LanguageListener):
 # VALUE
 
     def exitValueBool(self, ctx:LanguageParser.ValueBoolContext):
-        self.stack.push(ctx.getText(),'bool')
-
+        self.compiler.stack_push(ctx.getText(),'bool')
 
     def exitValueID(self, ctx:LanguageParser.ValueIDContext):
         print('ID --> '+ctx.getText())
@@ -57,15 +42,16 @@ class LanguageListener(LanguageListener):
 
 
     def exitValueDecimal(self, ctx:LanguageParser.ValueDecimalContext):
-        self.stack.push(ctx.getText(), 'double')
+        self.compiler.stack_push(ctx.getText(),'double')
 
 
     def exitValueInt(self, ctx:LanguageParser.ValueIntContext):
-        self.stack.push(ctx.getText(), 'int')
+        self.compiler.stack_push(ctx.getText(), 'int')
 
 
     def exitValueString(self, ctx:LanguageParser.ValueStringContext):
-        self.stack.push(ctx.getText()[1:-1], 'str')
+        # self.compiler.stack_push(ctx.getText()[1:-1], 'str')
+        pass
 
 
     def exitValueArray(self, ctx:LanguageParser.ValueArrayContext):
@@ -78,7 +64,7 @@ class LanguageListener(LanguageListener):
 # ARRAY Body 
 
     def exitArray_row(self, ctx:LanguageParser.Array_rowContext):
-        self.stack.push_row(len(ctx.COM())+1)
+        self.compiler.stack_row(len(ctx.COM())+1)
 
 # INSTRUCTION
 

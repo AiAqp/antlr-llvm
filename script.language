@@ -2,5 +2,5 @@ global int i1 = 10
 double d1 = .01
 double d2 = 2.0
 bool b1 = true 
-str s1 = 'abc 123?'
+//str s1 = 'abc 123?'
 array a1 = [1.1,2.2,3.3]

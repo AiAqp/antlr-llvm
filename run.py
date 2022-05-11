@@ -1,5 +1,5 @@
 from LanguageListener import LanguageListener
-from NameSpace import NameSpace
+from Compiler import Compiler
 from generated.LanguageLexer import LanguageLexer
 from generated.LanguageParser import LanguageParser
 from IRModuleBuilder import IRModuleBuilder
