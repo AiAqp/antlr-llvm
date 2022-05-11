@@ -16,13 +16,12 @@ class Compiler:
             'bool': ir.IntType(64),
             'int': ir.IntType(64),
             'double': ir.DoubleType(),
-            'str': 0,
             '*void': ir.IntType(8).as_pointer(),
-            'voidf': ir.FunctionType(ir.VoidType(), [])
-        }
-        self.ir_aggregate_type_map = {
+            'voidf': ir.FunctionType(ir.VoidType(), []),
+            'str': lambda v: ir.Constant(ir.ArrayType(ir.IntType(8), len(v)), bytearray(v.encode("utf8"))), 
             'array' : lambda t, n: ir.ArrayType(self.ir_type_map[t], n)
         }
+        
         self.module = ir.Module(name=__file__) 
 
     # Value stack methods
