@@ -11,7 +11,7 @@ class LanguageListener(LanguageListener):
 # START
 
     def enterStart(self, ctx:LanguageParser.StartContext):
-        pass
+        self.compiler.init_main()
 
     def exitStart(self, ctx:LanguageParser.StartContext):
         self.compiler.status()
@@ -21,15 +21,13 @@ class LanguageListener(LanguageListener):
 
     def exitAssignEvaluate(self, ctx:LanguageParser.AssignEvaluateContext):
         # str(ctx.ID()),str(ctx.SCOPE()),str(ctx.TYP())
-        id = str(ctx.ID())
-        var = self.compiler.new_variable(id)
-        self.compiler.init_variable(id, var)
+        self.compiler.new_var(str(ctx.ID()))
 
     def exitAssignID(self, ctx:LanguageParser.AssignIDContext):
-        pass
+        self.compiler.globalspace[str(ctx.ID())] = None
 
     def exitAssignUninit(self, ctx:LanguageParser.AssignUninitContext):
-        pass
+        self.compiler.new_var(str(ctx.ID()),str(ctx.TYP()))
 
 # VALUE
 
@@ -37,7 +35,8 @@ class LanguageListener(LanguageListener):
         self.compiler.stack_push(ctx.getText(),'bool')
 
     def exitValueID(self, ctx:LanguageParser.ValueIDContext):
-        print('ID --> '+ctx.getText())
+        # print('ID --> '+ctx.getText())
+        pass
         
 
 
@@ -50,8 +49,8 @@ class LanguageListener(LanguageListener):
 
 
     def exitValueString(self, ctx:LanguageParser.ValueStringContext):
-        # self.compiler.stack_push(ctx.getText()[1:-1], 'str')
-        pass
+        self.compiler.stack_push(ctx.getText()[1:-1], 'str')
+        
 
 
     def exitValueArray(self, ctx:LanguageParser.ValueArrayContext):
@@ -74,6 +73,7 @@ class LanguageListener(LanguageListener):
 # EXPRESSION
 
     def exitExpressionValue(self, ctx:LanguageParser.ExpressionValueContext):
+        
         pass
 
 
@@ -82,7 +82,11 @@ class LanguageListener(LanguageListener):
 
 
     def exitExpressionArithm(self, ctx:LanguageParser.ExpressionArithmContext):
-        pass
+        print('exit arth -->',ctx.getText())
+        result = self.compiler.arithemtic()
+        print(result)
+        
+        
 
 
     def exitExpressionNested(self, ctx:LanguageParser.ExpressionNestedContext):
@@ -91,14 +95,16 @@ class LanguageListener(LanguageListener):
 # FUNCTION
 
     def enterN_func(self, ctx:LanguageParser.N_funcContext):
-        ids = ctx.ID()
-        id_ = ids[0]
-        for i in ids[1:]: print('Function: ', id_, 'takes: ', i)
-        pass
-
+        arg_typ = []
+        arg_id = []
+        for arg in ctx.assign():
+            arg_typ.append(str(arg.TYP()))
+            arg_id.append(str(arg.ID()))
+        self.compiler.new_function(str(ctx.ID()),str(ctx.TYP()),arg_typ)
+        self.compiler.new_builder(str(ctx.ID()),arg_typ)
 
     def exitN_func(self, ctx:LanguageParser.N_funcContext):
-        pass
+        self.compiler.terminate()
 
 # CLASS
 
