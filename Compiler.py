@@ -30,10 +30,19 @@ class Compiler:
     def arithemtic(self):
         a = self.stack_pop()
         b = self.stack_pop()
-        c = a.add(b)
-        self.value_stack.append(c)
-        return a 
-
+        if self.builder:
+            if a and b:
+                v = self.builder.add(a,b)
+                self.value_stack.append(v)
+            else:
+                print('Error: cant add function values',a,b)
+        else:
+            if a and b:
+                c = a.add(b)
+                self.value_stack.append(c)
+            else:
+                print('Error: cant add values',a,b)
+         
 
     def init_main(self):
         self.main_f = ir.Function(self.module, self.ir_type_map['voidf'], name = 'main')
@@ -42,7 +51,7 @@ class Compiler:
     
     def new_function(self, id: str, type:str, arg_types):
         arg_typ = []
-        self.inhibit_push = len(arg_types)
+        # self.inhibit_push = len(arg_types)
         for i in arg_types:
             arg_typ.append(self.ir_type_map[i])
         f_type = ir.FunctionType(self.ir_type_map[type],arg_typ)
@@ -52,11 +61,19 @@ class Compiler:
     def new_builder(self,id: str,arg_ids):
         block = self.globalspace[id].append_basic_block(name='start '+id)
         args = self.globalspace[id].args
+        
         for i in args:
-            self.localspace[arg_ids.pop(0)] = i
+            
+            x = arg_ids.pop(0)
+            print('!!!',i,x)
+            self.localspace[x] = i
         self.builder = ir.IRBuilder(block)
+        print('exit builder ->',self.localspace)
 
     def terminate(self):
+        v = self.stack_pop()
+        print('TERMINATOR -->',v)
+        self.builder.ret(v)
         self.builder = None
         
     # Value stack methods
@@ -65,14 +82,34 @@ class Compiler:
         if self.value_stack:
             return self.value_stack.pop()
         else: 
-            print('Warning: stack empty')
-            return 'Empty'
+            print('Warning: reading from empty stack')
+            return None
 
-    def stack_push(self,value:str,type:str):
-        if self.inhibit_push == 0:
-            self.value_stack.append(self.ir_type_map[type](value))
-        else:
+    def stack_push(self, value = '',type = '', id = ''):
+        if self.inhibit_push > 0:
+            print('inhibit',id)
             self.inhibit_push -=1
+            return
+        if id and self.builder:
+            if id in self.localspace:
+                self.value_stack.append(self.localspace[id])
+                print('local - - - - -',self.value_stack)
+            elif id in self.globalspace:
+                print('global - - - - -',self.value_stack)
+                self.value_stack.append(self.globalspace[id])
+            else:
+                print('Error, no variable', id)
+                self.value_stack.append(None)
+            return
+        if id:
+            if id in self.globalspace:
+                self.value_stack.append(self.globalspace[id])
+            else:
+                print('Error, no variable', id)
+                self.value_stack.append(None)
+            return
+        self.value_stack.append(self.ir_type_map[type](value))       
+
     
     def stack_row(self, elements:int):
         n = elements
@@ -92,11 +129,11 @@ class Compiler:
                 self.globalspace[id] = ir.GlobalVariable(self.module, self.ir_type_map[type], name=id)
             else:
                 c = self.stack_pop()
-                if c == 'Empty':
-                    print('Error: no constant declared for '+id)
-                else:
+                if c:
                     self.globalspace[id] = ir.GlobalVariable(self.module, c.type, name=id)
                     self.globalspace[id].initializer = c
+                else:
+                    print('Error: no constant declared for '+id)
             self.globalspace[id].linkage = 'internal'
     
 

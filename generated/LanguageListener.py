@@ -26,6 +26,24 @@ class LanguageListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by LanguageParser#terminal.
+    def enterTerminal(self, ctx:LanguageParser.TerminalContext):
+        pass
+
+    # Exit a parse tree produced by LanguageParser#terminal.
+    def exitTerminal(self, ctx:LanguageParser.TerminalContext):
+        pass
+
+
+    # Enter a parse tree produced by LanguageParser#terminable.
+    def enterTerminable(self, ctx:LanguageParser.TerminableContext):
+        pass
+
+    # Exit a parse tree produced by LanguageParser#terminable.
+    def exitTerminable(self, ctx:LanguageParser.TerminableContext):
+        pass
+
+
     # Enter a parse tree produced by LanguageParser#expressionValue.
     def enterExpressionValue(self, ctx:LanguageParser.ExpressionValueContext):
         pass
@@ -68,6 +86,15 @@ class LanguageListener(ParseTreeListener):
 
     # Exit a parse tree produced by LanguageParser#n_func.
     def exitN_func(self, ctx:LanguageParser.N_funcContext):
+        pass
+
+
+    # Enter a parse tree produced by LanguageParser#argument.
+    def enterArgument(self, ctx:LanguageParser.ArgumentContext):
+        pass
+
+    # Exit a parse tree produced by LanguageParser#argument.
+    def exitArgument(self, ctx:LanguageParser.ArgumentContext):
         pass
 
 

@@ -1,25 +1,32 @@
 grammar Language;
 start : (n_func | n_clas | instr)+;
 
-instr
-    : ('return'? (assign | call | n_if | n_for)
-    | 'return' expression)+
-    ;
+
+instr : (assign | n_if | n_for | call)+ ;
+
+terminal : 'return' (assign | expression);
+
+terminable : (instr | terminal)+;
+
 
 expression           
-    :  expression ((PLS | MNS | MUL | DIV | EXP) expression)+                       #expressionArithm
+    :  expression OP_ARTH expression                       #expressionArithm
     |  expression (EQ | NEQ | GT | GTE | LS | LSE | NOT | AND | OR) expression      #expressionBool
     |  LRB expression RRB                                                           #expressionNested                
     |  value                                                                        #expressionValue
     ;   
- 
-n_func : 'function' (ID | 'init' | 'print' | 'scan' | 'main') LRB ((ID | assign) (COM (ID | assign))*)? RRB instr* 'end';       
+
+OP_ARTH : PLS | MNS | MUL | DIV | EXP;
+
+n_func : TYP 'function' ID LRB (assign (COM assign)*)? RRB terminable? 'end';       
+argument : TYP ID;
+
 n_clas : 'class' ID 'is' assign* n_func* 'end';                              
 N_STRING : APO .*? APO;
 
 n_array : LSB array_row (SEM array_row)? RSB;
-n_if : 'if' expression' then' instr* ('elif' expression 'then' instr*)* ('else' instr*)? 'end';
-n_for : 'for' ((INT COL INT) | INT | assign) 'go' instr* 'end';                                             
+n_if : 'if' expression' then' terminable ('elif' expression 'then' terminable)* ('else' terminable)? 'end';
+n_for : 'for' ((INT COL INT) | INT | assign) 'go' instr 'end';                                             
 
 array_row : value (COM value)*;
    
@@ -28,6 +35,7 @@ call : ID (clas | func_clas | array);
 clas : DOT (func_clas | ID);
 func_clas : LRB (value | assign (COM (value | assign))*)? RRB;
 array : LSB array_range (SEM array_range)? RSB;
+
 
 array_range
     : INT (COM INT)*
@@ -58,8 +66,6 @@ TYP : 'bool' | 'int' | 'str' | 'array' | 'struct' | 'double';
 BOOL : 'true' | 'false';
 DECIMAL : INT? DOT INT; 
 INT : [0-9]+;
-
-
 
 PLS : '+';
 MNS : '-';

@@ -24,6 +24,7 @@ class LanguageListener(LanguageListener):
         self.compiler.new_var(str(ctx.ID()))
 
     def exitAssignID(self, ctx:LanguageParser.AssignIDContext):
+        print ('WWWW',self.compiler.inhibit_push,str(ctx.ID()))
         self.compiler.globalspace[str(ctx.ID())] = None
 
     def exitAssignUninit(self, ctx:LanguageParser.AssignUninitContext):
@@ -35,10 +36,8 @@ class LanguageListener(LanguageListener):
         self.compiler.stack_push(ctx.getText(),'bool')
 
     def exitValueID(self, ctx:LanguageParser.ValueIDContext):
-        # print('ID --> '+ctx.getText())
-        pass
+        self.compiler.stack_push(id =ctx.getText())
         
-
 
     def exitValueDecimal(self, ctx:LanguageParser.ValueDecimalContext):
         self.compiler.stack_push(ctx.getText(),'double')
@@ -82,12 +81,8 @@ class LanguageListener(LanguageListener):
 
 
     def exitExpressionArithm(self, ctx:LanguageParser.ExpressionArithmContext):
-        print('exit arth -->',ctx.getText())
-        result = self.compiler.arithemtic()
-        print(result)
+        self.compiler.arithemtic()
         
-        
-
 
     def exitExpressionNested(self, ctx:LanguageParser.ExpressionNestedContext):
         pass
@@ -101,10 +96,19 @@ class LanguageListener(LanguageListener):
             arg_typ.append(str(arg.TYP()))
             arg_id.append(str(arg.ID()))
         self.compiler.new_function(str(ctx.ID()),str(ctx.TYP()),arg_typ)
-        self.compiler.new_builder(str(ctx.ID()),arg_typ)
+        self.compiler.new_builder(str(ctx.ID()),arg_id)
 
     def exitN_func(self, ctx:LanguageParser.N_funcContext):
+        # self.compiler.terminate()
+        pass
+
+    def exitTerminal(self, ctx:LanguageParser.TerminalContext):
+        print('terminal',ctx.getText())
         self.compiler.terminate()
+
+
+    def exitTerminable(self, ctx:LanguageParser.TerminableContext):
+        print(ctx.getText())
 
 # CLASS
 
