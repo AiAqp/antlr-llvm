@@ -75,7 +75,36 @@ class Compiler:
         print('TERMINATOR -->',v)
         self.builder.ret(v)
         self.builder = None
-        
+
+    def new_struct(self, types = None, constants = None, pointers = None):
+        int8 = ir.IntType(8)
+        int32 = ir.IntType(32)
+        ctx = ir.global_context
+        book_t = ctx.get_identified_type('struct.Book')
+        book_t.set_body(int8, int8)
+        e = self.main.alloca(book_t)
+        book_ptr_0 = self.main.gep(e, [int32(0), int32(0)], inbounds=True)
+        self.main.store(int8(5), book_ptr_0, align=1)
+        book_ptr_1 = self.main.gep(e, [int32(0), int32(1)], inbounds=True)
+        self.main.store(int8(4), book_ptr_1, align=1)
+
+    def new_class(self, variables = None, methods = None):
+        int32 = ir.IntType(32)
+        ctx = ir.global_context
+        class_typ = ctx.get_identified_type('class')
+        class_typ.set_body(int32)
+        # class_typ_ptr = self.main.alloca(class_typ)
+        ptr_typ = ir.PointerType(class_typ)
+        # class_ptr_0 = self.main.gep(class_typ_ptr, [int32(0), int32(0)], inbounds=True)
+        f_t = ir.FunctionType(ir.VoidType(),[ptr_typ],var_arg=True)
+        f = ir.Function(self.module, f_t, name='initializer')
+        block = f.append_basic_block(name='initializer')
+        l_builder = ir.IRBuilder(block)
+        class_self = f.args[0]
+        instance_p = l_builder.gep(class_self, [int32(0), int32(0)], inbounds=True)
+        l_builder.store(int32(0),instance_p,align=1)
+        l_builder.ret_void
+
     # Value stack methods
 
     def stack_pop(self):

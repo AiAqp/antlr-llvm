@@ -14,6 +14,7 @@ class LanguageListener(LanguageListener):
         self.compiler.init_main()
 
     def exitStart(self, ctx:LanguageParser.StartContext):
+        self.compiler.new_class()
         self.compiler.status()
         self.compiler.ir_to_ll()
 
@@ -138,17 +139,6 @@ class LanguageListener(LanguageListener):
 
     def exitCall(self, ctx:LanguageParser.CallContext):
         pass
-
-
-
-    def exitClas(self, ctx:LanguageParser.ClasContext):
-        pass
-
-
-
-    def exitFunc_clas(self, ctx:LanguageParser.Func_clasContext):
-        pass
-
 
 
     def exitArray(self, ctx:LanguageParser.ArrayContext):

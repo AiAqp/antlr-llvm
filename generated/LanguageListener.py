@@ -107,6 +107,24 @@ class LanguageListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by LanguageParser#n_struct.
+    def enterN_struct(self, ctx:LanguageParser.N_structContext):
+        pass
+
+    # Exit a parse tree produced by LanguageParser#n_struct.
+    def exitN_struct(self, ctx:LanguageParser.N_structContext):
+        pass
+
+
+    # Enter a parse tree produced by LanguageParser#arg_typs.
+    def enterArg_typs(self, ctx:LanguageParser.Arg_typsContext):
+        pass
+
+    # Exit a parse tree produced by LanguageParser#arg_typs.
+    def exitArg_typs(self, ctx:LanguageParser.Arg_typsContext):
+        pass
+
+
     # Enter a parse tree produced by LanguageParser#n_array.
     def enterN_array(self, ctx:LanguageParser.N_arrayContext):
         pass
@@ -143,39 +161,30 @@ class LanguageListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by LanguageParser#call.
-    def enterCall(self, ctx:LanguageParser.CallContext):
-        pass
-
-    # Exit a parse tree produced by LanguageParser#call.
-    def exitCall(self, ctx:LanguageParser.CallContext):
-        pass
-
-
-    # Enter a parse tree produced by LanguageParser#clas.
-    def enterClas(self, ctx:LanguageParser.ClasContext):
-        pass
-
-    # Exit a parse tree produced by LanguageParser#clas.
-    def exitClas(self, ctx:LanguageParser.ClasContext):
-        pass
-
-
-    # Enter a parse tree produced by LanguageParser#func_clas.
-    def enterFunc_clas(self, ctx:LanguageParser.Func_clasContext):
-        pass
-
-    # Exit a parse tree produced by LanguageParser#func_clas.
-    def exitFunc_clas(self, ctx:LanguageParser.Func_clasContext):
-        pass
-
-
     # Enter a parse tree produced by LanguageParser#array.
     def enterArray(self, ctx:LanguageParser.ArrayContext):
         pass
 
     # Exit a parse tree produced by LanguageParser#array.
     def exitArray(self, ctx:LanguageParser.ArrayContext):
+        pass
+
+
+    # Enter a parse tree produced by LanguageParser#functionCall.
+    def enterFunctionCall(self, ctx:LanguageParser.FunctionCallContext):
+        pass
+
+    # Exit a parse tree produced by LanguageParser#functionCall.
+    def exitFunctionCall(self, ctx:LanguageParser.FunctionCallContext):
+        pass
+
+
+    # Enter a parse tree produced by LanguageParser#classCall.
+    def enterClassCall(self, ctx:LanguageParser.ClassCallContext):
+        pass
+
+    # Exit a parse tree produced by LanguageParser#classCall.
+    def exitClassCall(self, ctx:LanguageParser.ClassCallContext):
         pass
 
 
