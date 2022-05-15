@@ -89,6 +89,15 @@ class LanguageListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by LanguageParser#arg_func.
+    def enterArg_func(self, ctx:LanguageParser.Arg_funcContext):
+        pass
+
+    # Exit a parse tree produced by LanguageParser#arg_func.
+    def exitArg_func(self, ctx:LanguageParser.Arg_funcContext):
+        pass
+
+
     # Enter a parse tree produced by LanguageParser#argument.
     def enterArgument(self, ctx:LanguageParser.ArgumentContext):
         pass

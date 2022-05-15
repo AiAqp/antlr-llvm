@@ -1,5 +1,5 @@
 grammar Language;
-start : (n_func | n_clas | instr)+;
+start : (n_func | n_clas | n_struct | instr)+;
 
 
 instr : (assign | n_if | n_for | call)+ ;
@@ -17,14 +17,17 @@ expression
     ;   
 OP_ARTH : PLS | MNS | MUL | DIV | EXP;
 
-n_func : TYP 'function' ID LRB (assign (COM assign)*)? RRB terminable? 'end';       
+n_func : 'function' arg_func terminable? 'end';
+
+arg_func : TYP ID LRB (argument (COM argument)*)? RRB;
+
 argument : TYP ID;
 
-n_clas : 'class' ID arg_typs n_func* 'end';
+n_clas : 'class' arg_typs n_func+ 'end';
 
-n_struct : 'struct' ID arg_typs;
+n_struct : 'struct' arg_typs;
 
-arg_typs : LCB assign+ RCB;
+arg_typs : ID LCB argument+ RCB;
 
 N_STRING : APO .*? APO;
 

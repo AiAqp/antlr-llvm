@@ -14,11 +14,12 @@ class LanguageListener(LanguageListener):
         self.compiler.init_main()
 
     def exitStart(self, ctx:LanguageParser.StartContext):
-        self.compiler.new_class()
         self.compiler.status()
         self.compiler.ir_to_ll()
 
 # ASSIGN
+    def exitArgument(self, ctx:LanguageParser.ArgumentContext):
+        self.compiler.stack_push_typ(str(ctx.ID()),str(ctx.TYP()))
 
     def exitAssignEvaluate(self, ctx:LanguageParser.AssignEvaluateContext):
         # str(ctx.ID()),str(ctx.SCOPE()),str(ctx.TYP())
@@ -90,14 +91,19 @@ class LanguageListener(LanguageListener):
     
 # FUNCTION
 
+    def exitArg_func(self, ctx:LanguageParser.Arg_funcContext):
+        self.compiler.new_function(str(ctx.ID()), str(ctx.TYP()), len(ctx.argument()))
+        
+
     def enterN_func(self, ctx:LanguageParser.N_funcContext):
-        arg_typ = []
-        arg_id = []
-        for arg in ctx.assign():
-            arg_typ.append(str(arg.TYP()))
-            arg_id.append(str(arg.ID()))
-        self.compiler.new_function(str(ctx.ID()),str(ctx.TYP()),arg_typ)
-        self.compiler.new_builder(str(ctx.ID()),arg_id)
+        # arg_typ = []
+        # arg_id = []
+        # for arg in ctx.argument():
+        #     arg_typ.append(str(arg.TYP()))
+        #     arg_id.append(str(arg.ID()))
+        # self.compiler.new_function(str(ctx.ID()),str(ctx.TYP()),arg_typ)
+        # self.compiler.new_builder(str(ctx.ID()),arg_id)
+        pass
 
     def exitN_func(self, ctx:LanguageParser.N_funcContext):
         # self.compiler.terminate()
@@ -112,8 +118,12 @@ class LanguageListener(LanguageListener):
         print(ctx.getText())
 
 # CLASS
+    def exitN_struct(self, ctx:LanguageParser.N_structContext):
+        pass
+        # self.compiler.new_struct()
 
     def enterN_clas(self, ctx:LanguageParser.N_clasContext):
+        # self.compiler.new_class()
         pass
 
 
@@ -121,6 +131,15 @@ class LanguageListener(LanguageListener):
         pass
 
 
+    def enterArg_typs(self, ctx:LanguageParser.Arg_typsContext):
+        pass
+
+
+    def exitArg_typs(self, ctx:LanguageParser.Arg_typsContext):
+        self.compiler.new_struct(str(ctx.ID()), len(ctx.argument()))
+        
+
+# Aggregates
 
     def exitN_array(self, ctx:LanguageParser.N_arrayContext):
         pass

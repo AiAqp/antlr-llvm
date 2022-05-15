@@ -4,6 +4,7 @@ class Compiler:
 
     def __init__(self):
         self.inhibit_push = 0
+        self.active_class = False
         self.value_stack = []
         self.globalspace = {}
         self.localspace = {}
@@ -22,6 +23,7 @@ class Compiler:
             'double': ir.DoubleType(),
             '*void': ir.IntType(8).as_pointer(),
             'voidf': ir.FunctionType(ir.VoidType(), []),
+            'void': ir.FunctionType(ir.VoidType(), []),
             'str': lambda v: ir.Constant(ir.ArrayType(ir.IntType(8), len(v)), bytearray(v.encode("utf8"))), 
             'array' : lambda t, n: ir.ArrayType(self.ir_type_map[t], n)
         }
@@ -49,14 +51,24 @@ class Compiler:
         self.main_b = self.main_f.append_basic_block(name='entry main')
         self.main = ir.IRBuilder(self.main_b) 
     
-    def new_function(self, id: str, type:str, arg_types):
-        arg_typ = []
-        # self.inhibit_push = len(arg_types)
-        for i in arg_types:
-            arg_typ.append(self.ir_type_map[i])
-        f_type = ir.FunctionType(self.ir_type_map[type],arg_typ)
+    def new_function(self, id:str, type:str, arg_len:int):
+        types = []
+        ids = []
+        while arg_len > 0:
+            v = self.value_stack.pop()
+            types.append(v[1])
+            ids.append(v[0])
+            arg_len -= 1
+        f_type = ir.FunctionType(self.ir_type_map[type],types)
         f = ir.Function(self.module, f_type, name=id)
+        for i in f.args:
+            x = ids.pop(0)
+            print('!!!',i,x)
+            self.localspace[x] = i
         self.globalspace[id] = f
+        block = f.append_basic_block(name='start '+id)
+        self.builder = ir.IRBuilder(block)
+    
 
     def new_builder(self,id: str,arg_ids):
         block = self.globalspace[id].append_basic_block(name='start '+id)
@@ -76,26 +88,21 @@ class Compiler:
         self.builder.ret(v)
         self.builder = None
 
-    def new_struct(self, types = None, constants = None, pointers = None):
-        int8 = ir.IntType(8)
-        int32 = ir.IntType(32)
+    def new_struct(self, id:str, len:int):
+        types = []
         ctx = ir.global_context
-        book_t = ctx.get_identified_type('struct.Book')
-        book_t.set_body(int8, int8)
-        e = self.main.alloca(book_t)
-        book_ptr_0 = self.main.gep(e, [int32(0), int32(0)], inbounds=True)
-        self.main.store(int8(5), book_ptr_0, align=1)
-        book_ptr_1 = self.main.gep(e, [int32(0), int32(1)], inbounds=True)
-        self.main.store(int8(4), book_ptr_1, align=1)
+        structure = ctx.get_identified_type(id)
+        while len > 0:
+            v = self.value_stack.pop()[1]
+            types.insert(0,v)
+            len -= 1
+        structure.set_body(*types)
+        self.globalspace[id] = structure
 
-    def new_class(self, variables = None, methods = None):
+    def new_class(self, id:str):
         int32 = ir.IntType(32)
-        ctx = ir.global_context
-        class_typ = ctx.get_identified_type('class')
-        class_typ.set_body(int32)
-        # class_typ_ptr = self.main.alloca(class_typ)
+        class_typ = self.globalspace[id]
         ptr_typ = ir.PointerType(class_typ)
-        # class_ptr_0 = self.main.gep(class_typ_ptr, [int32(0), int32(0)], inbounds=True)
         f_t = ir.FunctionType(ir.VoidType(),[ptr_typ],var_arg=True)
         f = ir.Function(self.module, f_t, name='initializer')
         block = f.append_basic_block(name='initializer')
@@ -104,6 +111,9 @@ class Compiler:
         instance_p = l_builder.gep(class_self, [int32(0), int32(0)], inbounds=True)
         l_builder.store(int32(0),instance_p,align=1)
         l_builder.ret_void
+    
+    def terminate_class(self):
+        self.active_class = True
 
     # Value stack methods
 
@@ -139,13 +149,15 @@ class Compiler:
             return
         self.value_stack.append(self.ir_type_map[type](value))       
 
-    
-    def stack_row(self, elements:int):
-        n = elements
+    def stack_push_typ(self, id, typ):
+        self.value_stack.append((id, self.ir_type_map[typ]))
+
+    def stack_row(self, len:int):
+        n = len
         row = []
-        while elements > 0:
+        while len > 0:
             row.append(self.value_stack.pop())
-            elements -= 1
+            len -= 1
         self.value_stack.append(ir.ArrayType(row[0].type, n)(row))
 
     # Name space methods 

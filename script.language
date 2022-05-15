@@ -18,19 +18,32 @@ int function f1(int a, int b)
 end
 
 out = f1(1,2) 
-*/
+
 
 class c1 {
-    int ci1 = 0
-    int ci2 = 0
+    int ci1
+    int ci2
     double cd1
     }
     void function cf1(int arg1, int arg2)
         ci1 = arg1 + arg2
+        ci2 = 2
     end 
 end
 
 c1.ci1
 c1.cf1(1,2)
+
+*/
+
+struct s1 {
+    int si1
+    int si2
+    double sd1
+    }
+
+function int f1(int a, int b)
+    return a + b
+end
 
 
