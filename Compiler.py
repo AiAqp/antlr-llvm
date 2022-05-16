@@ -113,26 +113,28 @@ class Compiler:
         int32 = ir.IntType(32)
         class_typ, ids = self.globalspace[id]
         ptr_typ = ir.PointerType(class_typ)
-        f_t = ir.FunctionType(ir.VoidType(),[ptr_typ],var_arg=True)
-        init = ir.Function(self.module, f_t, name='initializer')
-        block = init.append_basic_block(name='initializer')
+        f_t = ir.FunctionType(ir.VoidType(),[ptr_typ,*class_typ.elements])
+        init = ir.Function(self.module, f_t, name='enter initializer')
+        block = init.append_basic_block(name= 'enter initializer')
         
         init_builder = ir.IRBuilder(block)
         class_self = init.args[0]
         n = 0
-        for i in class_typ.elements:
+        for i in init.args[1:]:
             p = init_builder.gep(class_self, [int32(0), int32(n)], inbounds=True)
-            init_builder.store(i(0), p, align=1)
+            init_builder.store(i, p, align=1)
             self.localspace[ids.pop(0)]= i
             n += 1
         
-        init_builder.ret_void
+        init_builder.ret_void()
         self.localspace['init']=init
         self.active_class = ptr_typ
-        for i in self.localspace: print(i, self.localspace[i])
+
     
-    def terminate_class(self):
+    def terminate_class(self, id:str):
+        self.globalspace[id] = (self.globalspace[id][0], self.localspace)
         self.active_class = None
+        self.localspace = {}
 
     # Value stack methods
 
@@ -197,11 +199,28 @@ class Compiler:
             self.globalspace[id].linkage = 'internal'
     
 
-    def call_func(self):
-        pass
+    def call_func(self, id:str, arg_len:int):
+        args = []
+        while arg_len>0:
+            arg_len -= 1
+            x = self.stack_pop()
+            args.insert(0,x)
+        if self.builder:
+            pass
+        elif id == 'init':
+            a = self.main.alloca(self.active_class)
+            init = self.localspace['init']
+            print('call args -- >',*args)
+            self.main.call(init,[a,*args])
+        else:
+            f = self.globalspace[id]
+            self.main.call(f,args)
+                
+        
 
-    def call_class(self):
-        pass
+    def call_class(self, id:str):
+        self.active_class, self.localspace = self.globalspace[id]
+        
 
     def status(self):
         for i in self.globalspace: 

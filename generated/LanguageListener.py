@@ -170,12 +170,12 @@ class LanguageListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by LanguageParser#array.
-    def enterArray(self, ctx:LanguageParser.ArrayContext):
+    # Enter a parse tree produced by LanguageParser#arrayCall.
+    def enterArrayCall(self, ctx:LanguageParser.ArrayCallContext):
         pass
 
-    # Exit a parse tree produced by LanguageParser#array.
-    def exitArray(self, ctx:LanguageParser.ArrayContext):
+    # Exit a parse tree produced by LanguageParser#arrayCall.
+    def exitArrayCall(self, ctx:LanguageParser.ArrayCallContext):
         pass
 
 

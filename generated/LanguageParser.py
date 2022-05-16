@@ -1522,31 +1522,6 @@ class LanguageParser ( Parser ):
                 listener.exitClassCall(self)
 
 
-    class ArrayContext(CallContext):
-
-        def __init__(self, parser, ctx:ParserRuleContext): # actually a LanguageParser.CallContext
-            super().__init__(parser)
-            self.copyFrom(ctx)
-
-        def ID(self):
-            return self.getToken(LanguageParser.ID, 0)
-        def LSB(self):
-            return self.getToken(LanguageParser.LSB, 0)
-        def RSB(self):
-            return self.getToken(LanguageParser.RSB, 0)
-        def array_range(self):
-            return self.getTypedRuleContext(LanguageParser.Array_rangeContext,0)
-
-
-        def enterRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "enterArray" ):
-                listener.enterArray(self)
-
-        def exitRule(self, listener:ParseTreeListener):
-            if hasattr( listener, "exitArray" ):
-                listener.exitArray(self)
-
-
     class FunctionCallContext(CallContext):
 
         def __init__(self, parser, ctx:ParserRuleContext): # actually a LanguageParser.CallContext
@@ -1580,6 +1555,31 @@ class LanguageParser ( Parser ):
                 listener.exitFunctionCall(self)
 
 
+    class ArrayCallContext(CallContext):
+
+        def __init__(self, parser, ctx:ParserRuleContext): # actually a LanguageParser.CallContext
+            super().__init__(parser)
+            self.copyFrom(ctx)
+
+        def ID(self):
+            return self.getToken(LanguageParser.ID, 0)
+        def LSB(self):
+            return self.getToken(LanguageParser.LSB, 0)
+        def RSB(self):
+            return self.getToken(LanguageParser.RSB, 0)
+        def array_range(self):
+            return self.getTypedRuleContext(LanguageParser.Array_rangeContext,0)
+
+
+        def enterRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "enterArrayCall" ):
+                listener.enterArrayCall(self)
+
+        def exitRule(self, listener:ParseTreeListener):
+            if hasattr( listener, "exitArrayCall" ):
+                listener.exitArrayCall(self)
+
+
 
     def call(self):
 
@@ -1591,7 +1591,7 @@ class LanguageParser ( Parser ):
             self._errHandler.sync(self)
             la_ = self._interp.adaptivePredict(self._input,25,self._ctx)
             if la_ == 1:
-                localctx = LanguageParser.ArrayContext(self, localctx)
+                localctx = LanguageParser.ArrayCallContext(self, localctx)
                 self.enterOuterAlt(localctx, 1)
                 self.state = 178
                 self.match(LanguageParser.ID)

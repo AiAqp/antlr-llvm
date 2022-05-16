@@ -40,7 +40,7 @@ n_for : 'for' ((INT COL INT) | INT | assign) 'go' instr 'end';
 array_row : value (COM value)*;
    
 call 
-    : ID LSB array_range? RSB #array
+    : ID LSB array_range? RSB #arrayCall
     | ID LRB (value (COM value)*)? RRB #functionCall
     | ID DOT (call | ID) #classCall
     ;

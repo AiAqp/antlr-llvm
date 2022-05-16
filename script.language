@@ -34,6 +34,12 @@ end
 c1.ci1
 c1.cf1(1,2)
 
+
+function int f2(int a, int b)
+        return a + b
+    end
+
+f2(1,2)
 */
 
 s1 {
@@ -47,4 +53,4 @@ class
     end
 end
 
-new_s1 = s1.init(1,2,.01)
+s1.init(1,2,.01)

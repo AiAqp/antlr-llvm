@@ -41,23 +41,17 @@ class LanguageListener(LanguageListener):
     def exitValueID(self, ctx:LanguageParser.ValueIDContext):
         self.compiler.stack_push(id =ctx.getText())
         
-
     def exitValueDecimal(self, ctx:LanguageParser.ValueDecimalContext):
         self.compiler.stack_push(ctx.getText(),'double')
-
 
     def exitValueInt(self, ctx:LanguageParser.ValueIntContext):
         self.compiler.stack_push(ctx.getText(), 'int')
 
-
     def exitValueString(self, ctx:LanguageParser.ValueStringContext):
         self.compiler.stack_push(ctx.getText()[1:-1], 'str')
         
-
-
     def exitValueArray(self, ctx:LanguageParser.ValueArrayContext):
         pass
-
 
     def exitValueCall(self, ctx:LanguageParser.ValueCallContext):
         pass
@@ -75,18 +69,14 @@ class LanguageListener(LanguageListener):
 # EXPRESSION
 
     def exitExpressionValue(self, ctx:LanguageParser.ExpressionValueContext):
-        
         pass
-
 
     def exitExpressionBool(self, ctx:LanguageParser.ExpressionBoolContext):
         pass
 
-
     def exitExpressionArithm(self, ctx:LanguageParser.ExpressionArithmContext):
         self.compiler.arithemtic()
         
-
     def exitExpressionNested(self, ctx:LanguageParser.ExpressionNestedContext):
         pass
     
@@ -95,25 +85,15 @@ class LanguageListener(LanguageListener):
     def exitArg_func(self, ctx:LanguageParser.Arg_funcContext):
         self.compiler.new_function(str(ctx.ID()), str(ctx.TYP()), len(ctx.argument()))
         
-
     def enterN_func(self, ctx:LanguageParser.N_funcContext):
-        # arg_typ = []
-        # arg_id = []
-        # for arg in ctx.argument():
-        #     arg_typ.append(str(arg.TYP()))
-        #     arg_id.append(str(arg.ID()))
-        # self.compiler.new_function(str(ctx.ID()),str(ctx.TYP()),arg_typ)
-        # self.compiler.new_builder(str(ctx.ID()),arg_id)
         pass
 
     def exitN_func(self, ctx:LanguageParser.N_funcContext):
-        # self.compiler.terminate()
         pass
 
     def exitTerminal(self, ctx:LanguageParser.TerminalContext):
         # print('terminal',ctx.getText())
         self.compiler.terminate_func()
-
 
     def exitTerminable(self, ctx:LanguageParser.TerminableContext):
         # print(ctx.getText())
@@ -131,8 +111,21 @@ class LanguageListener(LanguageListener):
         self.compiler.new_class(self.aux_stack[-1])
 
     def exitN_clas(self, ctx:LanguageParser.N_clasContext):
-        self.compiler.terminate_class()
+        self.compiler.terminate_class(self.aux_stack[-1])
 
+# CALLS        
+
+    def exitArrayCall(self, ctx:LanguageParser.ArrayCallContext):
+        pass
+
+    def exitFunctionCall(self, ctx:LanguageParser.FunctionCallContext):
+        self.compiler.call_func(str(ctx.ID()), len(ctx.value()))
+        pass
+        
+
+    def enterClassCall(self, ctx:LanguageParser.ClassCallContext):
+        # print('class -->',str(ctx.ID(0)))
+        self.compiler.call_class(str(ctx.ID(0)))
 
 # Aggregates
 
@@ -147,15 +140,6 @@ class LanguageListener(LanguageListener):
 
 
     def exitN_for(self, ctx:LanguageParser.N_forContext):
-        pass
-
-
-
-    def exitCall(self, ctx:LanguageParser.CallContext):
-        pass
-
-
-    def exitArray(self, ctx:LanguageParser.ArrayContext):
         pass
 
 
