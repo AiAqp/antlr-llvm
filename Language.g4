@@ -23,9 +23,9 @@ arg_func : TYP ID LRB (argument (COM argument)*)? RRB;
 
 argument : TYP ID;
 
-n_clas : 'class' arg_typs n_func+ 'end';
+n_struct : arg_typs n_clas?;
 
-n_struct : 'struct' arg_typs;
+n_clas : 'class' n_func+ 'end';
 
 arg_typs : ID LCB argument+ RCB;
 

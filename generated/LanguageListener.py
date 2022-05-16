@@ -107,21 +107,21 @@ class LanguageListener(ParseTreeListener):
         pass
 
 
-    # Enter a parse tree produced by LanguageParser#n_clas.
-    def enterN_clas(self, ctx:LanguageParser.N_clasContext):
-        pass
-
-    # Exit a parse tree produced by LanguageParser#n_clas.
-    def exitN_clas(self, ctx:LanguageParser.N_clasContext):
-        pass
-
-
     # Enter a parse tree produced by LanguageParser#n_struct.
     def enterN_struct(self, ctx:LanguageParser.N_structContext):
         pass
 
     # Exit a parse tree produced by LanguageParser#n_struct.
     def exitN_struct(self, ctx:LanguageParser.N_structContext):
+        pass
+
+
+    # Enter a parse tree produced by LanguageParser#n_clas.
+    def enterN_clas(self, ctx:LanguageParser.N_clasContext):
+        pass
+
+    # Exit a parse tree produced by LanguageParser#n_clas.
+    def exitN_clas(self, ctx:LanguageParser.N_clasContext):
         pass
 
 

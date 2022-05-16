@@ -7,6 +7,7 @@ class LanguageListener(LanguageListener):
 
     def __init__(self):
         self.compiler = Compiler()
+        self.aux_stack = []
 
 # START
 
@@ -14,7 +15,7 @@ class LanguageListener(LanguageListener):
         self.compiler.init_main()
 
     def exitStart(self, ctx:LanguageParser.StartContext):
-        self.compiler.status()
+        # self.compiler.status()
         self.compiler.ir_to_ll()
 
 # ASSIGN
@@ -110,34 +111,28 @@ class LanguageListener(LanguageListener):
         pass
 
     def exitTerminal(self, ctx:LanguageParser.TerminalContext):
-        print('terminal',ctx.getText())
-        self.compiler.terminate()
+        # print('terminal',ctx.getText())
+        self.compiler.terminate_func()
 
 
     def exitTerminable(self, ctx:LanguageParser.TerminableContext):
-        print(ctx.getText())
+        # print(ctx.getText())
+        pass
 
 # CLASS
+    def exitArg_typs(self, ctx:LanguageParser.Arg_typsContext):
+        self.aux_stack.append(str(ctx.ID()))
+        self.compiler.new_struct(str(ctx.ID()), len(ctx.argument()))
+
     def exitN_struct(self, ctx:LanguageParser.N_structContext):
-        pass
-        # self.compiler.new_struct()
+        self.aux_stack.pop()
 
     def enterN_clas(self, ctx:LanguageParser.N_clasContext):
-        # self.compiler.new_class()
-        pass
-
+        self.compiler.new_class(self.aux_stack[-1])
 
     def exitN_clas(self, ctx:LanguageParser.N_clasContext):
-        pass
+        self.compiler.terminate_class()
 
-
-    def enterArg_typs(self, ctx:LanguageParser.Arg_typsContext):
-        pass
-
-
-    def exitArg_typs(self, ctx:LanguageParser.Arg_typsContext):
-        self.compiler.new_struct(str(ctx.ID()), len(ctx.argument()))
-        
 
 # Aggregates
 

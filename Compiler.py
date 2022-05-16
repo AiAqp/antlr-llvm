@@ -4,7 +4,7 @@ class Compiler:
 
     def __init__(self):
         self.inhibit_push = 0
-        self.active_class = False
+        self.active_class = None
         self.value_stack = []
         self.globalspace = {}
         self.localspace = {}
@@ -59,11 +59,18 @@ class Compiler:
             types.append(v[1])
             ids.append(v[0])
             arg_len -= 1
+        print('active class -->',self.active_class)
+        if self.active_class != None:
+            t = types.insert(0,self.active_class)
+            print('new class func ----->',types, t)
         f_type = ir.FunctionType(self.ir_type_map[type],types)
         f = ir.Function(self.module, f_type, name=id)
-        for i in f.args:
+        if self.active_class != None:
+            args = f.args[1:]
+        else:
+            args = f.args
+        for i in args:
             x = ids.pop(0)
-            print('!!!',i,x)
             self.localspace[x] = i
         self.globalspace[id] = f
         block = f.append_basic_block(name='start '+id)
@@ -77,43 +84,55 @@ class Compiler:
         for i in args:
             
             x = arg_ids.pop(0)
-            print('!!!',i,x)
+            # print('!!!',i,x)
             self.localspace[x] = i
         self.builder = ir.IRBuilder(block)
-        print('exit builder ->',self.localspace)
+        # print('exit builder ->',self.localspace)
 
-    def terminate(self):
+    def terminate_func(self):
         v = self.stack_pop()
-        print('TERMINATOR -->',v)
+        # print('TERMINATOR -->',v)
         self.builder.ret(v)
         self.builder = None
 
     def new_struct(self, id:str, len:int):
         types = []
+        ids = []
         ctx = ir.global_context
         structure = ctx.get_identified_type(id)
         while len > 0:
-            v = self.value_stack.pop()[1]
-            types.insert(0,v)
+            v = self.value_stack.pop()
+            ids.insert(0,v[0])
+            types.insert(0,v[1])
             len -= 1
         structure.set_body(*types)
-        self.globalspace[id] = structure
+        print('struct -->',structure.elements)
+        self.globalspace[id] = (structure, ids)
 
     def new_class(self, id:str):
         int32 = ir.IntType(32)
-        class_typ = self.globalspace[id]
+        class_typ, ids = self.globalspace[id]
         ptr_typ = ir.PointerType(class_typ)
         f_t = ir.FunctionType(ir.VoidType(),[ptr_typ],var_arg=True)
-        f = ir.Function(self.module, f_t, name='initializer')
-        block = f.append_basic_block(name='initializer')
-        l_builder = ir.IRBuilder(block)
-        class_self = f.args[0]
-        instance_p = l_builder.gep(class_self, [int32(0), int32(0)], inbounds=True)
-        l_builder.store(int32(0),instance_p,align=1)
-        l_builder.ret_void
+        init = ir.Function(self.module, f_t, name='initializer')
+        block = init.append_basic_block(name='initializer')
+        
+        init_builder = ir.IRBuilder(block)
+        class_self = init.args[0]
+        n = 0
+        for i in class_typ.elements:
+            p = init_builder.gep(class_self, [int32(0), int32(n)], inbounds=True)
+            init_builder.store(i(0), p, align=1)
+            self.localspace[ids.pop(0)]= i
+            n += 1
+        
+        init_builder.ret_void
+        self.localspace['init']=init
+        self.active_class = ptr_typ
+        for i in self.localspace: print(i, self.localspace[i])
     
     def terminate_class(self):
-        self.active_class = True
+        self.active_class = None
 
     # Value stack methods
 
@@ -132,9 +151,9 @@ class Compiler:
         if id and self.builder:
             if id in self.localspace:
                 self.value_stack.append(self.localspace[id])
-                print('local - - - - -',self.value_stack)
+                # print('local - - - - -',self.value_stack)
             elif id in self.globalspace:
-                print('global - - - - -',self.value_stack)
+                # print('global - - - - -',self.value_stack)
                 self.value_stack.append(self.globalspace[id])
             else:
                 print('Error, no variable', id)
@@ -178,7 +197,10 @@ class Compiler:
             self.globalspace[id].linkage = 'internal'
     
 
-    def init_func(self):
+    def call_func(self):
+        pass
+
+    def call_class(self):
         pass
 
     def status(self):

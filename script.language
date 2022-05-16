@@ -36,14 +36,15 @@ c1.cf1(1,2)
 
 */
 
-struct s1 {
+s1 {
     int si1
     int si2
-    double sd1
+    double sd1 
     }
-
-function int f1(int a, int b)
-    return a + b
+class 
+    function int f1(int a, int b)
+        return a + b
+    end
 end
 
-
+new_s1 = s1.init(1,2,.01)
